@@ -13,8 +13,8 @@ from dotenv import load_dotenv
 # Load .env file if present
 load_dotenv()
 
-# 2. Initialize embedding model
-model = SentenceTransformer("all-MiniLM-L6-v2")
+# 2. Initialize embedding model using a small, fast model
+model = SentenceTransformer("paraphrase-MiniLM-L3-v2")  # ~90MB, small & Streamlit Cloud-friendly
 
 # 3. Load full structured EU law content from parsed JSON
 with open("real_eu_laws.json", "r") as f:
