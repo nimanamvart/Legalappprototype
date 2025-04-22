@@ -56,9 +56,12 @@ if query:
     system_prompt = "You are a legal assistant answering questions about EU digital laws. Always start with YES or NO, then give a brief legal justification with references."
     user_prompt = f"Question: {query}\n\nRelevant legal texts:\n" + "\n\n".join(relevant_contexts)
 
-    # Call OpenAI (or mock response for demo purposes)
+    # Generate answer
     try:
         openai.api_key = os.getenv("OPENAI_API_KEY")
+        if not openai.api_key:
+            raise ValueError("Missing API key")
+
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -67,8 +70,11 @@ if query:
             ]
         )
         answer = response["choices"][0]["message"]["content"]
+
     except Exception as e:
-        answer = "YES or NO placeholder. (OpenAI API not available in this environment.)"
+        top_ref = references[0]
+        answer = f"Based on the top result, this appears to be covered in {top_ref['ref']}.\n\n" \
+                 f"Excerpt: \"{top_ref['text']}\""
 
     # Display result
     st.write(answer)
